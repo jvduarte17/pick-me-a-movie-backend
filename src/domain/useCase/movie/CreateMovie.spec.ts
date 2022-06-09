@@ -1,5 +1,5 @@
-import Movie, { MovieData } from "../../domain/movie"
-import { MovieRepository } from "../interfaces/db/MovieRepository"
+import Movie, { MovieData } from "../../entities/movie"
+import { MovieRepository } from "../../interfaces/MovieRepository"
 import CreateMovieUseCase from "./CreateMovie"
 
 describe('testing CreateMovie.ts', () => {
