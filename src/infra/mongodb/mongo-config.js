@@ -36,42 +36,57 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var CreateMovie_1 = require("./domain/useCase/movie/CreateMovie");
-var mongo_config_1 = require("./infra/mongodb/mongo-config");
-var MovieRepositoryMongoDB_1 = require("./infra/repository/mongodb/MovieRepositoryMongoDB");
-var invoke = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var movie, movieRepo, useCase;
-    return __generator(this, function (_a) {
-        movie = {
-            description: 'Y',
-            id: '1',
-            image: '',
-            name: 'X',
-            releaseDate: new Date()
-        };
-        movieRepo = new MovieRepositoryMongoDB_1["default"]();
-        useCase = new CreateMovie_1["default"](movieRepo);
-        console.log('teste');
-        mongo_config_1.MongoHelper.connect('mongodb://root:example@localhost:27017/admin').then(function () { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, useCase.create(movie)];
+exports.MongoHelper = void 0;
+var mongodb_1 = require("mongodb");
+exports.MongoHelper = {
+    client: null,
+    uri: null,
+    connect: function (uri) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.uri = uri;
+                        _a = this;
+                        return [4 /*yield*/, mongodb_1.MongoClient.connect(uri, {
+                                useNewUrlParser: true,
+                                useUnifiedTopology: true
+                            })];
                     case 1:
-                        _a.sent();
+                        _a.client = _b.sent();
                         return [2 /*return*/];
                 }
             });
-        }); });
-        return [2 /*return*/];
-    });
-}); };
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, invoke()];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); })();
+        });
+    },
+    disconnect: function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.close()];
+                    case 1:
+                        _a.sent();
+                        this.client = null;
+                        return [2 /*return*/];
+                }
+            });
+        });
+    },
+    getCollection: function (collectionName) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!!((_a = this.client) === null || _a === void 0 ? void 0 : _a.isConnected())) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.connect(this.uri)];
+                    case 1:
+                        _b.sent();
+                        _b.label = 2;
+                    case 2: return [2 /*return*/, this.client.db().collection(collectionName)];
+                }
+            });
+        });
+    }
+};

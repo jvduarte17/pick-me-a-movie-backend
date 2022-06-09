@@ -36,42 +36,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-var CreateMovie_1 = require("./domain/useCase/movie/CreateMovie");
-var mongo_config_1 = require("./infra/mongodb/mongo-config");
-var MovieRepositoryMongoDB_1 = require("./infra/repository/mongodb/MovieRepositoryMongoDB");
-var invoke = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var movie, movieRepo, useCase;
-    return __generator(this, function (_a) {
-        movie = {
-            description: 'Y',
-            id: '1',
-            image: '',
-            name: 'X',
-            releaseDate: new Date()
-        };
-        movieRepo = new MovieRepositoryMongoDB_1["default"]();
-        useCase = new CreateMovie_1["default"](movieRepo);
-        console.log('teste');
-        mongo_config_1.MongoHelper.connect('mongodb://root:example@localhost:27017/admin').then(function () { return __awaiter(void 0, void 0, void 0, function () {
+var mongo_config_1 = require("../../mongodb/mongo-config");
+var MovieRepositoryMongoDB = /** @class */ (function () {
+    function MovieRepositoryMongoDB() {
+    }
+    MovieRepositoryMongoDB.prototype.save = function (movie) {
+        return __awaiter(this, void 0, void 0, function () {
+            var movieCollection, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, useCase.create(movie)];
+                    case 0: return [4 /*yield*/, mongo_config_1.MongoHelper.getCollection('movies')];
                     case 1:
-                        _a.sent();
+                        movieCollection = _a.sent();
+                        return [4 /*yield*/, movieCollection.insertOne(movie)];
+                    case 2:
+                        result = _a.sent();
+                        console.log(result.ops);
                         return [2 /*return*/];
                 }
             });
-        }); });
-        return [2 /*return*/];
-    });
-}); };
-(function () { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, invoke()];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
-    });
-}); })();
+        });
+    };
+    ;
+    return MovieRepositoryMongoDB;
+}());
+exports["default"] = MovieRepositoryMongoDB;

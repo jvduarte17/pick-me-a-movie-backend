@@ -1,6 +1,7 @@
 import { MovieData } from "./domain/entities/movie";
 import CreateMovieUseCase from "./domain/useCase/movie/CreateMovie";
-import MovieRepositoryMemory from "./infra/repository/memory/MovieRepositoryMemory";
+import { MongoHelper } from "./infra/mongodb/mongo-config";
+import MovieRepositoryMongoDB from "./infra/repository/mongodb/MovieRepositoryMongoDB";
 
 const invoke = async () => {
   const movie = {
@@ -10,12 +11,14 @@ const invoke = async () => {
     name: 'X',
     releaseDate: new Date()
   } as MovieData
-  const movieRepo = new MovieRepositoryMemory()
+  const movieRepo = new MovieRepositoryMongoDB()
   const useCase = new CreateMovieUseCase(movieRepo)
 
   console.log('teste')
 
-  await useCase.create(movie)
+  MongoHelper.connect('mongodb://root:example@localhost:27017/admin').then(async () => {
+    await useCase.create(movie)
+  })
 }
 
 (async () => {
