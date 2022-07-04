@@ -1,24 +1,20 @@
-import { MovieData } from "./domain/entities/movie";
 import CreateMovieUseCase from "./domain/useCase/movie/CreateMovie";
-import { MongoHelper } from "./infra/mongodb/mongo-config";
+import MovieController from "./infra/controllers/MovieController";
+import ExpressAdapter from "./infra/http/ExpressAdapter";
 import MovieRepositoryMongoDB from "./infra/repository/mongodb/MovieRepositoryMongoDB";
+import { MongoHelper } from "./infra/database/mongodb/mongo-config";
+import { Http } from "./infra/http/Http";
 
 const invoke = async () => {
-  const movie = {
-    description: 'Y',
-    id: '1',
-    image: '',
-    name: 'X',
-    releaseDate: new Date()
-  } as MovieData
+  const databaseUri = 'mongodb://root:example@localhost:27017/admin';
+  await MongoHelper.connect(databaseUri)
+
   const movieRepo = new MovieRepositoryMongoDB()
   const useCase = new CreateMovieUseCase(movieRepo)
+  const http: Http = new ExpressAdapter()
+  new MovieController(http, useCase)
 
-  console.log('teste')
-
-  MongoHelper.connect('mongodb://root:example@localhost:27017/admin').then(async () => {
-    await useCase.create(movie)
-  })
+  http.listen(8080)
 }
 
 (async () => {

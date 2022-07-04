@@ -1,6 +1,6 @@
 import movie from "../../../domain/entities/movie";
 import { MovieRepository } from "../../../domain/interfaces/MovieRepository";
-import { MongoHelper } from "../../mongodb/mongo-config";
+import { MongoHelper } from "../../database/mongodb/mongo-config";
 
 export default class MovieRepositoryMongoDB implements MovieRepository{
     async save(movie: movie) {
